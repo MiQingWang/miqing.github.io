@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="前言当今网络框架什么最火，当属Okhttp +rxjava +retrofit 三大开源框架结合，简单易用、功能强大。Retrofit 负责请求的数据和请求的结果，使用接口的方式呈现，OkHttp 负责请求的过程，RxJava 负责异步，各种线程之间的切换，三者缺一不可。 简介本文章使用框架版本为：Okhttp3 +rxjava2 +retrofit2 OkHttp3HTTP是现代应用程序网络的一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Android 开发框架搭建】-网络框架三剑客Okhttp+Rxjava+Retrofit">
+<meta property="og:url" content="http://miqingwang.github.io/2020/10/29/%E3%80%90Android%20%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E3%80%91-%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6%E4%B8%89%E5%89%91%E5%AE%A2Okhttp+Rxjava+Retrofit/index.html">
+<meta property="og:site_name" content="MiQing Blog">
+<meta property="og:description" content="前言当今网络框架什么最火，当属Okhttp +rxjava +retrofit 三大开源框架结合，简单易用、功能强大。Retrofit 负责请求的数据和请求的结果，使用接口的方式呈现，OkHttp 负责请求的过程，RxJava 负责异步，各种线程之间的切换，三者缺一不可。 简介本文章使用框架版本为：Okhttp3 +rxjava2 +retrofit2 OkHttp3HTTP是现代应用程序网络的一">
+<meta property="og:image" content="http://miqingwang.github.io/2020/10/29/%E3%80%90Android%20%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E3%80%91-%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6%E4%B8%89%E5%89%91%E5%AE%A2Okhttp+Rxjava+Retrofit/%e3%80%90Android+%e5%bc%80%e5%8f%91%e6%a1%86%e6%9e%b6%e6%90%ad%e5%bb%ba%e3%80%91-%e7%bd%91%e7%bb%9c%e6%a1%86%e6%9e%b6%e4%b8%89%e5%89%91%e5%ae%a2Okhttp%2bRxjava%2bRetrofit%2f1.png">
+<meta property="article:published_time" content="2020-10-29T08:27:00.832Z">
+<meta property="article:modified_time" content="2020-11-30T12:50:58.021Z">
+<meta property="article:author" content="MiQing">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://miqingwang.github.io/2020/10/29/%E3%80%90Android%20%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E3%80%91-%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6%E4%B8%89%E5%89%91%E5%AE%A2Okhttp+Rxjava+Retrofit/%e3%80%90Android+%e5%bc%80%e5%8f%91%e6%a1%86%e6%9e%b6%e6%90%ad%e5%bb%ba%e3%80%91-%e7%bd%91%e7%bb%9c%e6%a1%86%e6%9e%b6%e4%b8%89%e5%89%91%e5%ae%a2Okhttp%2bRxjava%2bRetrofit%2f1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://miqingwang.github.io/2020/10/29/【Android 开发框架搭建】-网络框架三剑客Okhttp+Rxjava+Retrofit/"/>
+
+
+
+
+
+  <title>【Android 开发框架搭建】-网络框架三剑客Okhttp+Rxjava+Retrofit | MiQing Blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+<a href="https://miqingwang.github.io/" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">MiQing Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">无惧艰难，让生活更幸福更充实，努力起飞！</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/%20" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://miqingwang.github.io/2020/10/29/%E3%80%90Android%20%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E3%80%91-%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6%E4%B8%89%E5%89%91%E5%AE%A2Okhttp+Rxjava+Retrofit/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="MiQing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MiQing Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【Android 开发框架搭建】-网络框架三剑客Okhttp+Rxjava+Retrofit</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-10-29T16:27:00+08:00">
+                2020-10-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>当今网络框架什么最火，当属Okhttp +rxjava +retrofit 三大开源框架结合，简单易用、功能强大。Retrofit 负责请求的数据和请求的结果，使用接口的方式呈现，OkHttp 负责请求的过程，RxJava 负责异步，各种线程之间的切换，三者缺一不可。</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>本文章使用框架版本为：Okhttp3 +rxjava2 +retrofit2</p>
+<h3 id="OkHttp3"><a href="#OkHttp3" class="headerlink" title="OkHttp3"></a>OkHttp3</h3><p>HTTP是现代应用程序网络的一种方式。这是我们交换数据和媒体的方式。高效地使用HTTP可以让你的东西加载更快，节省带宽。<br>OkHttp是一个HTTP客户端，是有效的默认:<br>HTTP/2支持允许所有请求到同一主机共享一个套接字。<br>连接池减少了请求延迟(如果HTTP/2不可用)。<br>透明GZIP缩小下载大小。<br>响应缓存完全避免了网络中的重复请求。<br>当网络出现问题时，OkHttp会持续运行:它会从常见的连接问题中安静地恢复。如果您的服务有多个IP地址，如果第一次连接失败，OkHttp将尝试替代地址。这对于IPv4+IPv6和驻留在冗余数据中心中的服务是必要的。OkHttp支持现代的TLS特性(TLS 1.3、ALPN、证书固定)。它可以配置为向后扩展连接。<br>使用OkHttp很容易。它的请求/响应API使用流畅构建器和不变性设计。它支持同步阻塞调用和带有回调的异步调用。</p>
+<p>注：OkHttp 支持 Android 2.3 及以上版本Android平台， 对于 Java, JDK 1.7及以上.</p>
+<p><a href="https://github.com/square/okhttp" target="_blank" rel="noopener">Github传送门</a><br><a href="https://square.github.io/okhttp/" target="_blank" rel="noopener">官网传送门</a></p>
+<a id="more"></a>
+
+<h3 id="Retrofit2"><a href="#Retrofit2" class="headerlink" title="Retrofit2"></a>Retrofit2</h3><p>适用于Android和Java的类型安全HTTP客户端。，Retrofit简化了网络请求流程，基于OkHtttp做了封装，<br>解耦的更彻底:比方说通过注解来配置请求参数，通过工厂来生成CallAdapter，Converter，你可以使用不同的请求适配器(CallAdapter),<br> 比方说RxJava，Java8, Guava。你可以使用不同的反序列化工具(Converter)，比方说json, protobuff, xml, moshi等等。</p>
+<p><a href="https://github.com/square/retrofit" target="_blank" rel="noopener">Github传送门</a><br><a href="https://square.github.io/retrofit/" target="_blank" rel="noopener">官网传送门</a></p>
+<h3 id="Rxjava2"><a href="#Rxjava2" class="headerlink" title="Rxjava2"></a>Rxjava2</h3><p>一个词：异步。</p>
+<p>RxJava 在 GitHub 主页上的自我介绍是 “a library for composing asynchronous and event-based programs using observable sequences for the Java VM”（一个在 Java VM 上使用可观测的序列来组成异步的、基于事件的程序的库）。这就是 RxJava ，概括得非常精准。其实， RxJava 的本质可以压缩为异步这一个词。说到根上，它就是一个实现异步操作的库，而别的定语都是基于这之上的。它提供一套异步编程的 API，这套 API 是基于观察者模式的，而且是链式调用的，所以使用 RxJava 编写的代码的逻辑会非常简洁。</p>
+<p><a href="https://github.com/ReactiveX/RxAndroid" target="_blank" rel="noopener">Github传送门</a><br><a href="http://reactivex.io/" target="_blank" rel="noopener">官网传送门</a></p>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>网上封装的框架库很多，想要正在理解Okhttp3 +rxjava2 +retrofit2组合使用方式，还得自己动手啊！下面会详解搭建的过程。</p>
+<h3 id="1-添加三剑客专属依赖"><a href="#1-添加三剑客专属依赖" class="headerlink" title="1. 添加三剑客专属依赖"></a>1. 添加三剑客专属依赖</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//okhttp3</span></span><br><span class="line">api <span class="string">"com.squareup.okhttp3:okhttp:4.0.0"</span></span><br><span class="line"><span class="comment">//okhttp3-日志拦截器</span></span><br><span class="line">api <span class="string">"com.squareup.okhttp3:logging-interceptor:4.0.0"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//retrofit2</span></span><br><span class="line">api <span class="string">"com.squareup.retrofit2:retrofit:2.2.2"</span></span><br><span class="line"><span class="comment">//retrofit2-gson转换器</span></span><br><span class="line">api <span class="string">"com.squareup.retrofit2:converter-gson:2.2.2"</span></span><br><span class="line"><span class="comment">//retrofit2-scalars转换器</span></span><br><span class="line">api <span class="string">"com.squareup.retrofit2:converter-scalars:2.2.2"</span></span><br><span class="line"><span class="comment">//retrofit2-rxjava2适配器</span></span><br><span class="line">api <span class="string">"com.squareup.retrofit2:adapter-rxjava2:2.2.2"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//rxjava2</span></span><br><span class="line">api <span class="string">"io.reactivex.rxjava2:rxjava:2.2.18"</span></span><br><span class="line"><span class="comment">//rxjava2-rxandroid</span></span><br><span class="line">api <span class="string">"io.reactivex.rxjava2:rxandroid:2.1.1"</span></span><br></pre></td></tr></table></figure>
+<p>如果依赖下载过慢建议使用阿里云镜像，在项目的build.gradle 中添加</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    repositories &#123;</span><br><span class="line">        google()</span><br><span class="line">        maven &#123; url <span class="string">'https://maven.aliyun.com/nexus/content/groups/public/'</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">allprojects &#123;</span><br><span class="line">    repositories &#123;</span><br><span class="line">        google()</span><br><span class="line">        maven &#123; url <span class="string">'https://maven.aliyun.com/nexus/content/groups/public/'</span> &#125;</span><br><span class="line">        maven &#123; url <span class="string">"https://jitpack.io"</span> &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-封装框架支持的功能"><a href="#2-封装框架支持的功能" class="headerlink" title="2. 封装框架支持的功能"></a>2. 封装框架支持的功能</h3><p>定义一个框架配置类NetworkConfig，其中包含框架支持的功能及初始化的信息</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NetworkConfig</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String releaseBaseUrl; <span class="comment">// release地址，根据工具编译的模式自动切换</span></span><br><span class="line">    <span class="keyword">private</span> String debugBaseUrl;   <span class="comment">// debug地址，根据工具编译的模式自动切换</span></span><br><span class="line">    <span class="keyword">private</span> Application application; <span class="comment">// Android 全局应用程序主类</span></span><br><span class="line">    <span class="keyword">private</span> HttpLoggingInterceptor.Level logLevel;  <span class="comment">//网络请求日志打印级别</span></span><br><span class="line">    <span class="keyword">private</span> Boolean isOpenCache;  <span class="comment">//是否开启网络缓存，无网络时自动返回缓存内容</span></span><br><span class="line">    <span class="keyword">private</span> Boolean isOpenRxCache; <span class="comment">// 是否开启RxCache数据缓存</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;NetworkHeaderParams&gt; networkHeaderParams;  <span class="comment">// 自定义配置网络请求header信息</span></span><br><span class="line">    <span class="keyword">private</span>  OkHttpClient.Builder okHttpClientBuild; <span class="comment">//自定义配置OkhttpClient</span></span><br><span class="line">    <span class="keyword">private</span> ResponseErrorListener responseErrorListener;  <span class="comment">// 自定义配置全局异常捕获监听</span></span><br><span class="line"></span><br><span class="line">   ...此处省略set/get方法</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-封装获取okhttp及retrofit类"><a href="#3-封装获取okhttp及retrofit类" class="headerlink" title="3. 封装获取okhttp及retrofit类"></a>3. 封装获取okhttp及retrofit类</h3><p>新建Network类代码如下，getOkHttpClientInstance、getRetrofitInstance两个方法为核心方法，用于构造OkHttpClient、Retrofit，该类初始化构造方法入参框架配置类NetworkConfig。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Network</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String TAG = Network<span class="class">.<span class="keyword">class</span>.<span class="title">getSimpleName</span>()</span>;</span><br><span class="line">    <span class="comment">//缓存最大容量</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> CACHE_MAX_SIZE = <span class="number">10</span> * <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> NetworkConfig networkConfig;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">Network</span><span class="params">(NetworkConfig networkConfig)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.networkConfig = networkConfig;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// getOkHttpClientInstance方法：</span></span><br><span class="line"><span class="comment">// 初始化HttpLoggingInterceptor 网络请求日志打印拦截器器，并设置外部配置的打印级别，默认设置无打印，其它打印级别自行参考源码</span></span><br><span class="line"><span class="comment">// new OkHttpClient.Builder()构建OkHttpClient对象用于网络请求，并且可设置connectTimeout、writeTimeout、readTimeout时长，也可以外部自定义配置构建OkHttpClient传递给框架，</span></span><br><span class="line"><span class="comment">// addInterceptor()可配置自定义的拦截器，框架内部默认包含缓存拦截器和动态设置header头信息拦截器</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> OkHttpClient <span class="title">getOkHttpClientInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//网络请求日志打印拦截器</span></span><br><span class="line">        HttpLoggingInterceptor httpLoggingInterceptor = <span class="keyword">new</span> HttpLoggingInterceptor(message -&gt; Log.e(TAG, message));</span><br><span class="line">        <span class="comment">//设置外部配置打印级别</span></span><br><span class="line">        httpLoggingInterceptor.level(networkConfig.getLogLevel());</span><br><span class="line">        OkHttpClient.Builder builder;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果外部引用自定义了OkHttpClient.Builder 这里处理合并，否则走框架默认创建方法</span></span><br><span class="line">        <span class="keyword">if</span> (networkConfig.getOkHttpClientBuild() != <span class="keyword">null</span>) &#123;</span><br><span class="line">            builder = networkConfig.getOkHttpClientBuild();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            builder = <span class="keyword">new</span> OkHttpClient.Builder()</span><br><span class="line">                    .connectTimeout(<span class="number">10</span>, TimeUnit.SECONDS)</span><br><span class="line">                    .writeTimeout(<span class="number">10</span>, TimeUnit.SECONDS)</span><br><span class="line">                    .readTimeout(<span class="number">30</span>, TimeUnit.SECONDS);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//外部引用如果开启缓存，需要设置缓存拦截器，无网络时自动获取缓存数据</span></span><br><span class="line">        <span class="keyword">if</span> (networkConfig.getOpenCache()) &#123;</span><br><span class="line">            File httpCacheDirectory = <span class="keyword">new</span> File(networkConfig.getApplication().getCacheDir(), <span class="string">"common_net_cache"</span>);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Cache cache = <span class="keyword">new</span> Cache(httpCacheDirectory, CACHE_MAX_SIZE);</span><br><span class="line">                builder.cache(cache);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                Log.e(TAG, <span class="string">"Could not create http cache"</span>, e);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            builder.addInterceptor(<span class="keyword">new</span> NetworkCacheInterceptor(networkConfig.getApplication()));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> builder</span><br><span class="line">                <span class="comment">//框架动态设置header头信息拦截器</span></span><br><span class="line">                .addInterceptor(<span class="keyword">new</span> NetworkInterceptor(networkConfig.getNetworkHeaderParams()))</span><br><span class="line">                .addInterceptor(httpLoggingInterceptor)</span><br><span class="line">                .addNetworkInterceptor(httpLoggingInterceptor)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// getRetrofitInstance方法：</span></span><br><span class="line"><span class="comment">// new Retrofit.Builder()构建Retrofit类，</span></span><br><span class="line"><span class="comment">// baseUrl()配置基础网络地址，用于外部配置地址拼接，</span></span><br><span class="line"><span class="comment">// client()设置Okhttpclient用于内部封装的网络请求调用</span></span><br><span class="line"><span class="comment">// addConverterFactory(ScalarsConverterFactory.create()) addConverterFactory(GsonConverterFactory.create())用于设置请求返回值转换器支持String类型及实体类返回值的处理</span></span><br><span class="line"><span class="comment">// addCallAdapterFactory(RxJava2CallAdapterFactory.create())用于设置Rxjava2返回值的支持Oservable&lt;T&gt;</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Retrofit <span class="title">getRetrofitInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Retrofit.Builder()</span><br><span class="line">                .baseUrl(BuildConfig.DEBUG ? networkConfig.getDebugBaseUrl() : networkConfig.getReleaseBaseUrl())</span><br><span class="line">                .client(getOkHttpClientInstance())</span><br><span class="line">                <span class="comment">//增加返回值为String的支持</span></span><br><span class="line">                .addConverterFactory(ScalarsConverterFactory.create())</span><br><span class="line">                <span class="comment">//增加返回值为Gson的支持(以实体类返回)</span></span><br><span class="line">                .addConverterFactory(GsonConverterFactory.create())</span><br><span class="line">                <span class="comment">//增加返回值为Oservable&lt;T&gt;的支持</span></span><br><span class="line">                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="4-定义框架内部拦截器"><a href="#4-定义框架内部拦截器" class="headerlink" title="4. 定义框架内部拦截器"></a>4. 定义框架内部拦截器</h3><p>构建NetworkInterceptor拦截器，内部处理外部自定义的NetworkHeaderParams接口配置的信息，可外部会定义多个实现NetworkHeaderParams接口的配置<br>所以构造函数入参为List<NetworkHeaderParams> networkHeaderParamsList</NetworkHeaderParams></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">NetworkHeaderParams</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//retrofit header中配置的参数名称</span></span><br><span class="line">    <span class="comment">//  @Headers(&#123;</span></span><br><span class="line">    <span class="comment">//            "token:true"</span></span><br><span class="line">    <span class="comment">//    &#125;)</span></span><br><span class="line">    <span class="function">String <span class="title">paramsName</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//网络请求头中设置的header头参数名</span></span><br><span class="line">    <span class="function">String <span class="title">headerName</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//网络请求头中设置的header头中的值</span></span><br><span class="line">    <span class="function">String <span class="title">headerValue</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 框架自有拦截器，处理外部传递header信息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NetworkInterceptor</span> <span class="keyword">implements</span> <span class="title">okhttp3</span>.<span class="title">Interceptor</span> </span>&#123;</span><br><span class="line">    <span class="comment">//    private static final String FOR_NAME = "UTF-8";</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = NetworkInterceptor<span class="class">.<span class="keyword">class</span>.<span class="title">getSimpleName</span>()</span>;</span><br><span class="line">    <span class="comment">//    private static final Charset UTF8 = Charset.forName(FOR_NAME);</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;NetworkHeaderParams&gt; networkHeaderParamsList;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 初始化设置外部自定义header信息接口集合</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> networkHeaderParamsList 自定义header信息接口集合</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">NetworkInterceptor</span><span class="params">(List&lt;NetworkHeaderParams&gt; networkHeaderParamsList)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.networkHeaderParamsList = networkHeaderParamsList;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        Request request = chain.request();</span><br><span class="line">        Request.Builder requestBuilder = request.newBuilder();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//框架内部设置外部自定义header头信息</span></span><br><span class="line">        <span class="keyword">if</span> (networkHeaderParamsList != <span class="keyword">null</span> &amp;&amp; networkHeaderParamsList.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (NetworkHeaderParams networkHeaderParams : networkHeaderParamsList) &#123;</span><br><span class="line">                addHeaderParams(request, requestBuilder, networkHeaderParams);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> chain.proceed(requestBuilder.build());</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 封装的设置header头信息方法</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> request             HTTP 请求</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> networkHeaderParams 自定义header信息接口</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addHeaderParams</span><span class="params">(Request request, Request.Builder requestBuilder, NetworkHeaderParams networkHeaderParams)</span> </span>&#123;</span><br><span class="line">        String paramStr = request.header(networkHeaderParams.paramsName());</span><br><span class="line">        <span class="keyword">boolean</span> isAddHeader = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">if</span> (!TextUtils.isEmpty(paramStr)</span><br><span class="line">                &amp;&amp; NetworkLoader.DEFAULT_IS_ADD_HEADER.equals(paramStr)) &#123;</span><br><span class="line">            isAddHeader = <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (isAddHeader) &#123;</span><br><span class="line">            requestBuilder</span><br><span class="line">                    .addHeader(networkHeaderParams.headerName(), networkHeaderParams.headerValue())</span><br><span class="line">                    .removeHeader(networkHeaderParams.paramsName());</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            requestBuilder</span><br><span class="line">                    .removeHeader(networkHeaderParams.paramsName());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>构建NetworkCacheInterceptor拦截器，用于缓存网络请求值，定义了缓存时长及读取缓存时间</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * 无网络状态下智能读取缓存的拦截器</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NetworkCacheInterceptor</span> <span class="keyword">implements</span> <span class="title">Interceptor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Context context;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="title">NetworkCacheInterceptor</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.context = context;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        Request request = chain.request();</span><br><span class="line">        <span class="keyword">if</span> (NetworkUtil.isNetworkAvailable(context)) &#123;</span><br><span class="line">            Response response = chain.proceed(request);</span><br><span class="line">            <span class="comment">// read from cache for 60 s</span></span><br><span class="line">            <span class="keyword">int</span> maxAge = <span class="number">60</span>;</span><br><span class="line">            <span class="keyword">return</span> response.newBuilder()</span><br><span class="line">                    .removeHeader(<span class="string">"Pragma"</span>)</span><br><span class="line">                    .removeHeader(<span class="string">"Cache-Control"</span>)</span><br><span class="line">                    .header(<span class="string">"Cache-Control"</span>, <span class="string">"public, max-age="</span> + maxAge)</span><br><span class="line">                    .build();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//读取缓存信息</span></span><br><span class="line">            request = request.newBuilder()</span><br><span class="line">                    .cacheControl(CacheControl.FORCE_CACHE)</span><br><span class="line">                    .build();</span><br><span class="line">            Response response = chain.proceed(request);</span><br><span class="line">            <span class="comment">//set cache times is 3 days</span></span><br><span class="line">            <span class="keyword">int</span> maxStale = <span class="number">60</span> * <span class="number">60</span> * <span class="number">24</span> * <span class="number">3</span>;</span><br><span class="line">            <span class="keyword">return</span> response.newBuilder()</span><br><span class="line">                    .removeHeader(<span class="string">"Pragma"</span>)</span><br><span class="line">                    .removeHeader(<span class="string">"Cache-Control"</span>)</span><br><span class="line">                    .header(<span class="string">"Cache-Control"</span>, <span class="string">"public, only-if-cached, max-stale="</span> + maxStale)</span><br><span class="line">                    .build();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="5-封装网络初始化配置入口"><a href="#5-封装网络初始化配置入口" class="headerlink" title="5. 封装网络初始化配置入口"></a>5. 封装网络初始化配置入口</h3><p>回顾下上面配置的类，构成函数，或者方法、属性基本都是protected、protected，遵循开闭原则，这里需要公开框架提供给外部使用的入口及配置。</p>
+<p>使用建造者模式定义初始化网络框架配置,内部设置默认值。外部初始化可不构建</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NetworkLoader</span> </span>&#123;</span><br><span class="line">     <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Build</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> NetworkConfig networkConfig;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Build</span><span class="params">(Application application)</span> </span>&#123;</span><br><span class="line">            networkConfig = <span class="keyword">new</span> NetworkConfig();</span><br><span class="line">            <span class="comment">//设置默认配置</span></span><br><span class="line">            networkConfig.setApplication(application);</span><br><span class="line">            networkConfig.setLogLevel(HttpLoggingInterceptor.Level.NONE);</span><br><span class="line">            networkConfig.setOpenCache(<span class="keyword">false</span>);</span><br><span class="line">            networkConfig.setOpenRxCache(<span class="keyword">false</span>);</span><br><span class="line">            networkConfig.setResponseErrorListener(<span class="keyword">new</span> BaseResponseErrorListenerImpl());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setBaseUrl</span><span class="params">(String releaseBaseUrl, String debugBaseUrl)</span> </span>&#123;</span><br><span class="line">            networkConfig.setReleaseBaseUrl(releaseBaseUrl);</span><br><span class="line">            networkConfig.setDebugBaseUrl(debugBaseUrl);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setLogLevel</span><span class="params">(HttpLoggingInterceptor.Level logLevel)</span> </span>&#123;</span><br><span class="line">            networkConfig.setLogLevel(logLevel);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setOpenCache</span><span class="params">(<span class="keyword">boolean</span> isOpenCache)</span> </span>&#123;</span><br><span class="line">            networkConfig.setOpenCache(isOpenCache);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setOpenRxCache</span><span class="params">(<span class="keyword">boolean</span> isOpenRxCache)</span> </span>&#123;</span><br><span class="line">            networkConfig.setOpenRxCache(isOpenRxCache);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setNetworkHeaderParams</span><span class="params">(NetworkHeaderParams networkHeaderParams)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (networkConfig.getNetworkHeaderParams() == <span class="keyword">null</span>) &#123;</span><br><span class="line">                networkConfig.setNetworkHeaderParams(<span class="keyword">new</span> ArrayList&lt;&gt;());</span><br><span class="line">            &#125;</span><br><span class="line">            networkConfig.getNetworkHeaderParams().add(networkHeaderParams);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setOkHttpClientBuild</span><span class="params">(OkHttpClient.Builder okHttpClientBuild)</span> </span>&#123;</span><br><span class="line">            networkConfig.setOkHttpClientBuild(okHttpClientBuild);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setResponseErrorListener</span><span class="params">(ResponseErrorListener responseErrorListener)</span> </span>&#123;</span><br><span class="line">            networkConfig.setResponseErrorListener(responseErrorListener);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">create</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            NetworkLoader.getInstance().setNetworkConfig(networkConfig);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">build</span><span class="params">()</span></span>&#123;</span><br><span class="line">            NetworkLoader.getInstance().build();</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上方NetworkLoader类定义框架公开的Build类用于构建框架所需配置，下方代码该类中添加私有的方法build()用于创建Okhttp加retrofit,此处NetworkLoader类定义为全局单例的类，使用容器的方式定义单例模式。公开了框架初始化的Retrofit、RxCache、RxError对象方便外部使用。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NetworkLoader</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = NetworkLoader<span class="class">.<span class="keyword">class</span>.<span class="title">getSimpleName</span>()</span>;</span><br><span class="line">    <span class="comment">//在retrofit设置api接口时header头设置参数开启</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_IS_ADD_HEADER = <span class="string">"true"</span>;</span><br><span class="line">    <span class="comment">//初始化网络框架静态容器</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> Map&lt;String, NetworkLoader&gt; networkLoaderMaps = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="comment">//框架配置类</span></span><br><span class="line">    <span class="keyword">private</span> NetworkConfig networkConfig = <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">//Retrofit用于外部创建请求处理rxjava2的链接</span></span><br><span class="line">    <span class="keyword">private</span> Retrofit retrofit = <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">//Rxjava数据缓存框架</span></span><br><span class="line">    <span class="keyword">private</span> RxCache rxCache = <span class="keyword">null</span>;</span><br><span class="line">    <span class="comment">//Rxjava全局异常</span></span><br><span class="line">    <span class="keyword">private</span> RxErrorHandler rxErrorHandler = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//公开设置配置类</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setNetworkConfig</span><span class="params">(NetworkConfig networkConfig)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.networkConfig = networkConfig;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//全局框架入口单例</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> NetworkLoader <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!networkLoaderMaps.containsKey(TAG)) &#123;</span><br><span class="line">            networkLoaderMaps.put(TAG, <span class="keyword">new</span> NetworkLoader());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> networkLoaderMaps.get(TAG);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//框架初始化入口</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (networkConfig == <span class="keyword">null</span>) &#123;</span><br><span class="line">            Log.e(TAG, <span class="string">"未设置网络框架配置，清使用NetworkLoader.Build类创建"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (TextUtils.isEmpty(networkConfig.getDebugBaseUrl()) || TextUtils.isEmpty(networkConfig.getReleaseBaseUrl())) &#123;</span><br><span class="line">            Log.e(TAG, <span class="string">"未设置网络框架基础请求地址,请配置debug或者release请求地址"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        setRetrofit(<span class="keyword">new</span> Network(networkConfig).getRetrofitInstance());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (networkConfig.getOpenRxCache()) &#123;</span><br><span class="line">            File rxCacheDirectory = <span class="keyword">new</span> File(networkConfig.getApplication().getCacheDir(), <span class="string">"common_rx_cache"</span>);</span><br><span class="line">            <span class="keyword">if</span> (!rxCacheDirectory.exists()) &#123;</span><br><span class="line">                rxCacheDirectory.mkdirs();</span><br><span class="line">            &#125;</span><br><span class="line">            setRxCache(<span class="keyword">new</span> RxCache.Builder()</span><br><span class="line">                    .persistence(rxCacheDirectory, <span class="keyword">new</span> GsonSpeaker()));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        setRxErrorHandler(RxErrorHandler</span><br><span class="line">                .builder()</span><br><span class="line">                .with(networkConfig.getApplication())</span><br><span class="line">                .responseErrorListener(networkConfig.getResponseErrorListener()).build());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//公开获取RxCache</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RxCache <span class="title">getRxCache</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> rxCache;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setRxCache</span><span class="params">(RxCache rxCache)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.rxCache = rxCache;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setRetrofit</span><span class="params">(Retrofit retrofit)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.retrofit = retrofit;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//公开获取RxError</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RxErrorHandler <span class="title">getRxErrorHandler</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> rxErrorHandler;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setRxErrorHandler</span><span class="params">(RxErrorHandler rxErrorHandler)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.rxErrorHandler = rxErrorHandler;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//公开获取Retrofit</span></span><br><span class="line">    <span class="meta">@NonNull</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Retrofit <span class="title">getRetrofit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> retrofit;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Build</span> </span>&#123;</span><br><span class="line">        <span class="keyword">private</span> NetworkConfig networkConfig;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Build</span><span class="params">(Application application)</span> </span>&#123;</span><br><span class="line">            networkConfig = <span class="keyword">new</span> NetworkConfig();</span><br><span class="line">            <span class="comment">//设置默认配置</span></span><br><span class="line">            networkConfig.setApplication(application);</span><br><span class="line">            networkConfig.setLogLevel(HttpLoggingInterceptor.Level.NONE);</span><br><span class="line">            networkConfig.setOpenCache(<span class="keyword">false</span>);</span><br><span class="line">            networkConfig.setOpenRxCache(<span class="keyword">false</span>);</span><br><span class="line">            networkConfig.setResponseErrorListener(<span class="keyword">new</span> BaseResponseErrorListenerImpl());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setBaseUrl</span><span class="params">(String releaseBaseUrl, String debugBaseUrl)</span> </span>&#123;</span><br><span class="line">            networkConfig.setReleaseBaseUrl(releaseBaseUrl);</span><br><span class="line">            networkConfig.setDebugBaseUrl(debugBaseUrl);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setLogLevel</span><span class="params">(HttpLoggingInterceptor.Level logLevel)</span> </span>&#123;</span><br><span class="line">            networkConfig.setLogLevel(logLevel);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setOpenCache</span><span class="params">(<span class="keyword">boolean</span> isOpenCache)</span> </span>&#123;</span><br><span class="line">            networkConfig.setOpenCache(isOpenCache);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setOpenRxCache</span><span class="params">(<span class="keyword">boolean</span> isOpenRxCache)</span> </span>&#123;</span><br><span class="line">            networkConfig.setOpenRxCache(isOpenRxCache);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setNetworkHeaderParams</span><span class="params">(NetworkHeaderParams networkHeaderParams)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (networkConfig.getNetworkHeaderParams() == <span class="keyword">null</span>) &#123;</span><br><span class="line">                networkConfig.setNetworkHeaderParams(<span class="keyword">new</span> ArrayList&lt;&gt;());</span><br><span class="line">            &#125;</span><br><span class="line">            networkConfig.getNetworkHeaderParams().add(networkHeaderParams);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setOkHttpClientBuild</span><span class="params">(OkHttpClient.Builder okHttpClientBuild)</span> </span>&#123;</span><br><span class="line">            networkConfig.setOkHttpClientBuild(okHttpClientBuild);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">setResponseErrorListener</span><span class="params">(ResponseErrorListener responseErrorListener)</span> </span>&#123;</span><br><span class="line">            networkConfig.setResponseErrorListener(responseErrorListener);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Build <span class="title">create</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            NetworkLoader.getInstance().setNetworkConfig(networkConfig);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">build</span><span class="params">()</span></span>&#123;</span><br><span class="line">            NetworkLoader.getInstance().build();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到此手动搭建轻量级的Okhttp3 +rxjava2 +retrofit2网络框架搭建完毕，根据自身项目使用动态自己调整。自己动手搭建的才是最熟悉使用最方便的。希望看完这篇文章小伙伴都能搭建出属于自己风格的网络框架哦。</p>
+<h2 id="APP中实战使用"><a href="#APP中实战使用" class="headerlink" title="APP中实战使用"></a>APP中实战使用</h2><h3 id="1-在Application中初始化"><a href="#1-在Application中初始化" class="headerlink" title="1.在Application中初始化"></a>1.在Application中初始化</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> NetworkLoader.Build(<span class="keyword">this</span>)</span><br><span class="line">                <span class="comment">//配置项目正式地址及测试地址必须配置</span></span><br><span class="line">                .setBaseUrl(<span class="string">"项目正式地址"</span>,<span class="string">"项目测试地址"</span>)</span><br><span class="line">                <span class="comment">//配置日志打印级别，可不配置默认不打印</span></span><br><span class="line">                .setLogLevel(HttpLoggingInterceptor.Level.HEADERS)</span><br><span class="line">                <span class="comment">//配置是否开启网络缓存，可不配置默认false不开启</span></span><br><span class="line">                .setOpenCache(<span class="keyword">true</span>)</span><br><span class="line">                <span class="comment">//配置是否使用RxCache辅助功能，可不配置默认false不开启</span></span><br><span class="line">                .setOpenRxCache(<span class="keyword">true</span>)</span><br><span class="line">                <span class="comment">//自定义token设置，可不配置</span></span><br><span class="line">                .setNetworkHeaderParams(<span class="keyword">new</span> TokenParams())</span><br><span class="line">                <span class="comment">//自定义网络异常处理，可不配置</span></span><br><span class="line">                 .setResponseErrorListener(<span class="keyword">new</span> CustomResponseErrorListenerImpl())</span><br><span class="line">                .create().build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-创建使用类"><a href="#2-创建使用类" class="headerlink" title="2.创建使用类"></a>2.创建使用类</h3><p>定义TestController类添加Retrofit接口、定义TestService类添加请求对应Rxjava返回值接口、定义TestServiceImpl接口实现类继承框架自带Base类，内部处理Reftofit创建请求方法通过<br>getApi().getTop()获取TestController配置的接口方法返回值为Rxjava中Observable类型，外部使用通过TestServiceImpl单例模式执行getTop方法获取接口响应结果。</p>
+<p><img src="%e3%80%90Android+%e5%bc%80%e5%8f%91%e6%a1%86%e6%9e%b6%e6%90%ad%e5%bb%ba%e3%80%91-%e7%bd%91%e7%bb%9c%e6%a1%86%e6%9e%b6%e4%b8%89%e5%89%91%e5%ae%a2Okhttp%2bRxjava%2bRetrofit%2f1.png" alt="示例1"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//Controller定义请求接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TestController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Headers</span>(&#123;</span><br><span class="line">            <span class="string">"token:true"</span></span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="meta">@GET</span>(<span class="string">"data/sk/101010100.html"</span>)</span><br><span class="line">    Observable&lt;BaseApiResult&lt;String&gt;&gt; getTop();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Service定义接口返回接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TestService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    Observable&lt;BaseApiResult&lt;String&gt;&gt; getTop();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//ServiceImpl定义接口请求及返回值处理，提供外部使用</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestServiceImpl</span> <span class="keyword">extends</span> <span class="title">BaseServiceImpl</span>&lt;<span class="title">TestController</span>&gt; <span class="keyword">implements</span> <span class="title">TestService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> TestServiceImpl instance = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">TestServiceImpl</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(TestController<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> TestServiceImpl <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (TestServiceImpl<span class="class">.<span class="keyword">class</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    instance = <span class="keyword">new</span> TestServiceImpl();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> Observable&lt;BaseApiResult&lt;String&gt;&gt; getTop() &#123;</span><br><span class="line">        <span class="keyword">return</span> getApi().getTop().compose(RxBus.ApplySchedulers());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//使用样例</span></span><br><span class="line">TestServiceImpl.getInstance().getTop().subscribe(data -&gt; &#123;</span><br><span class="line">    Log.e(<span class="string">"MainActivity"</span>, <span class="string">"subscribe: "</span>+JSON.toJSONString(data));</span><br><span class="line">&#125;, throwable -&gt; &#123;</span><br><span class="line">    Log.e(<span class="string">"MainActivity"</span>, <span class="string">"onCreate: "</span>, throwable);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//此处贴出ServiceImpl基类，内部处理Retrofit创建接口请求。关联NetworkLoader框架单例入口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseServiceImpl</span>&lt;<span class="title">Controller</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Controller controller;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BaseServiceImpl</span><span class="params">(Class&lt;Controller&gt; clazz)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            controller =  NetworkLoader.getInstance().getRetrofit().create(clazz);</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            Log.e(NetworkLoader.TAG, <span class="string">"RetrofitError: 配置网络框架时未执行build初始化,请检查"</span> );</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> Controller <span class="title">getApi</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> controller;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>一切的学习都是需要实践的，没有看过只有写过。希望大家都能去自己动手写一写。此网络框架后期会不断添加和网络请求相关的功能及组件。本文没有介绍目前支持的一些高级功能的使用，下篇文章会介绍使用RxCahce、Rxerrorhandler、Rxpermissions及自定义请求Header头接口这些相对高级的功能。</p>
+<p>框架及Demo源码<br>源码地址 <a href="https://github.com/MiQingWang/CommonNetFrame" target="_blank" rel="noopener">MiQingWang/CommonNetFrame</a></p>
+<p>注:框架额外配置依赖后续章节介绍</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//需要添加的其它依赖</span></span><br><span class="line"><span class="comment">//RxCache</span></span><br><span class="line">api <span class="string">"com.github.VictorAlbertos.RxCache:runtime:1.8.3-2.x"</span></span><br><span class="line">api <span class="string">"com.github.VictorAlbertos.Jolyglot:gson:0.0.4"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//rxerrorhandler</span></span><br><span class="line">api <span class="string">"me.jessyan:rxerrorhandler:2.1.1"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//rxpermissions</span></span><br><span class="line">api <span class="string">"com.github.tbruyelle:rxpermissions:0.10.2"</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">//gson</span></span><br><span class="line">api <span class="string">"com.google.code.gson:gson:2.8.6"</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">//fastjson</span></span><br><span class="line">api <span class="string">"com.alibaba:fastjson:1.2.68"</span></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/10/29/%E3%80%90Android%20%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E3%80%91-%E5%85%A8%E5%B1%80%E7%BB%88%E6%9E%81%E9%80%82%E9%85%8D%E6%96%B9%E6%A1%88AutoSize/" rel="next" title="【Android 开发框架搭建】-全局终极适配方案AutoSize">
+                <i class="fa fa-chevron-left"></i> 【Android 开发框架搭建】-全局终极适配方案AutoSize
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/11/19/%E3%80%90Android%20%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E3%80%91-%E7%BD%91%E7%BB%9C%E6%A1%86%E6%9E%B6%E4%B8%89%E5%89%91%E5%AE%A2Okhttp+Rxjava+Retrofit%E9%AB%98%E7%BA%A7%E7%AF%87/" rel="prev" title="【Android 开发框架搭建】-网络框架三剑客Okhttp+Rxjava+Retrofit高级篇">
+                【Android 开发框架搭建】-网络框架三剑客Okhttp+Rxjava+Retrofit高级篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">MiQing</p>
+              <p class="site-description motion-element" itemprop="description">MiQing的个人站,主要涉及android 开发及java开发知识分享及前沿技术探索</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%20%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">2.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#OkHttp3"><span class="nav-number">2.1.</span> <span class="nav-text">OkHttp3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Retrofit2"><span class="nav-number">2.2.</span> <span class="nav-text">Retrofit2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Rxjava2"><span class="nav-number">2.3.</span> <span class="nav-text">Rxjava2</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用"><span class="nav-number">3.</span> <span class="nav-text">使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-添加三剑客专属依赖"><span class="nav-number">3.1.</span> <span class="nav-text">1. 添加三剑客专属依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-封装框架支持的功能"><span class="nav-number">3.2.</span> <span class="nav-text">2. 封装框架支持的功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-封装获取okhttp及retrofit类"><span class="nav-number">3.3.</span> <span class="nav-text">3. 封装获取okhttp及retrofit类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-定义框架内部拦截器"><span class="nav-number">3.4.</span> <span class="nav-text">4. 定义框架内部拦截器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-封装网络初始化配置入口"><span class="nav-number">3.5.</span> <span class="nav-text">5. 封装网络初始化配置入口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#APP中实战使用"><span class="nav-number">4.</span> <span class="nav-text">APP中实战使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-在Application中初始化"><span class="nav-number">4.1.</span> <span class="nav-text">1.在Application中初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-创建使用类"><span class="nav-number">4.2.</span> <span class="nav-text">2.创建使用类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">MiQing</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hibiki.model.json"},"display":{"position":"right","width":145,"height":315,"hOffset":50,"vOffset":50},"mobile":{"show":true,"scale":0.5},"react":{"opacityDefault":0.7,"opacityOnHover":0.8},"log":false});</script></body>
+</html>
