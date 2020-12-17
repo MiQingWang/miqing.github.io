@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="MiQing Blog">
 <meta property="og:description" content="前言在Rxjava满大街跑的时代，使用过程中无法避免会有Rxjava资源回收处理不到位的地方，笔者深受其危害。当页面被销毁的时候，未正确处理取消订阅就会导致内存泄漏，往往我们会在页面的onDestroy方法中执行如下方法： 123if(rxDisposable!&#x3D;null &amp;&amp; !rxDisposable.isDisposed())&amp;#123;  rxDisposable.disp">
 <meta property="article:published_time" content="2020-12-01T07:49:05.595Z">
-<meta property="article:modified_time" content="2020-12-15T06:51:04.126Z">
+<meta property="article:modified_time" content="2020-12-17T07:34:58.472Z">
 <meta property="article:author" content="MiQing">
 <meta name="twitter:card" content="summary">
 
@@ -372,6 +372,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RxLifecycleTestActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = RxLifecycleTestActivity<span class="class">.<span class="keyword">class</span>.<span class="title">getSimpleName</span>()</span>;</span><br><span class="line">    <span class="keyword">private</span> Disposable dispose;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_rxlifecycle_test);</span><br><span class="line">        dispose = Observable.interval(<span class="number">0</span>, <span class="number">1</span>, TimeUnit.MILLISECONDS)</span><br><span class="line">                .doOnDispose(()-&gt;&#123;</span><br><span class="line">                    Log.e(TAG, <span class="string">"Unsubscribing subscription from onCreate()"</span>);</span><br><span class="line">                &#125;)</span><br><span class="line">                .as(AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(<span class="keyword">this</span>, Lifecycle.Event.ON_STOP)))</span><br><span class="line">                .subscribe(data -&gt; &#123;</span><br><span class="line">            Log.e(TAG, <span class="string">"onCreate: "</span> + data.toString());</span><br><span class="line">        &#125;, Throwable::printStackTrace);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>两种框架的使用都能解决使用rxjava流的过程内存泄漏的问题，读者们按需使用。这种方式能够大大减少开发过程中的冗余代码及处理遗漏导致的内存泄漏，读者可自行封装<br>简便使用。</p>
+<p>框架及Demo源码<br>源码地址 <a href="https://github.com/MiQingWang/CommonNetFrame" target="_blank" rel="noopener">MiQingWang/CommonNetFrame</a></p>
 
       
     </div>
@@ -405,6 +406,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/12/15/%E3%80%90Android-%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E3%80%91-%E5%AD%A6%E4%BC%9A%E4%BD%BF%E7%94%A8MVP%E6%9E%B6%E6%9E%84%E7%9A%84%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/" rel="prev" title="【Android-开发框架搭建】-学会使用MVP架构的搭建项目">
+                【Android-开发框架搭建】-学会使用MVP架构的搭建项目 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -481,7 +486,7 @@
               
                 <a href="/archives/%20%7C%7C%20archive">
               
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
