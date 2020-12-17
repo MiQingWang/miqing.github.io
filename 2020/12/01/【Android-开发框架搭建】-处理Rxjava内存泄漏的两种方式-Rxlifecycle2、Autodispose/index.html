@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="MiQing Blog">
 <meta property="og:description" content="前言在Rxjava满大街跑的时代，使用过程中无法避免会有Rxjava资源回收处理不到位的地方，笔者深受其危害。当页面被销毁的时候，未正确处理取消订阅就会导致内存泄漏，往往我们会在页面的onDestroy方法中执行如下方法： 123if(rxDisposable!&#x3D;null &amp;&amp; !rxDisposable.isDisposed())&amp;#123;  rxDisposable.disp">
 <meta property="article:published_time" content="2020-12-01T07:49:05.595Z">
-<meta property="article:modified_time" content="2020-12-17T07:34:58.472Z">
+<meta property="article:modified_time" content="2020-12-17T07:42:19.284Z">
 <meta property="article:author" content="MiQing">
 <meta name="twitter:card" content="summary">
 
@@ -360,7 +360,7 @@
 <p><a href="https://github.com/uber/AutoDispose" target="_blank" rel="noopener">Github传送门</a></p>
 <p>添加依赖</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">implementation <span class="string">'com.uber.autodispose:autodispose::1.4.0'</span></span><br><span class="line">implementation <span class="string">'com.uber.autodispose:autodispose-android-archcomponents:1.4.0'</span></span><br></pre></td></tr></table></figure>
-<p>AutoDispose比RxLifecycle好的地方在于它不需要你的Activity或Fragment继承指定的类。只要你的Activity或Fragment的父类实现了LifecycleOwner这个接口即可。<br>通过源码发现，support.v7包中的AppCompatActivity最终继承自SupportActivity，SupportActivity实现了LifecycleOwner接口。support.v4包中的Fragment也实现<br>了LifecycleOwner接口。AndroidX支持库同样也实现了LifecycleOwner接口，使用时只要能够获取到LifecycleOwner的地方就可以使用AutoDispose是不是非常方便。</p>
+<p>AutoDispose比RxLifecycle好的地方在于它不需要你的Activity或Fragment继承指定的类。只要你的Activity或Fragment的父类实现了LifecycleOwner这个接口即可。通过源码发现，support.v7包中的AppCompatActivity最终继承自SupportActivity，SupportActivity实现了LifecycleOwner接口。support.v4包中的Fragment也实现了LifecycleOwner接口。AndroidX支持库同样也实现了LifecycleOwner接口，使用时只要能够获取到LifecycleOwner的地方就可以使用AutoDispose是不是非常方便。</p>
 <p>下面介绍它的使用方式</p>
 <p>1.AutoDispose.autoDisposable(AndroidLifecycleScopeProvider.from(LifecycleOwner owner))</p>
 <p>在某个的生命周期发布订阅。则在对应生命周期取消订阅，如在onCreate里订阅，则在onDestroy取消订阅。在onResume里订阅，则在onStop取消订阅</p>
