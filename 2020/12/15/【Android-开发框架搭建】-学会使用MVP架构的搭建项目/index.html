@@ -443,8 +443,14 @@
           
 
   
+    <div class="comments" id="comments">
+      
+        <div id="gitment-container"></div>
+      
+    </div>
 
   
+ 
 
         </div>
         
@@ -736,32 +742,44 @@
 
 
 
+<!-- LOCAL: You can save these files to your site and update links -->
+    
+        
+        <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+        <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+    
+<!-- END LOCAL -->
+
+    
+
+    
+      <script type="text/javascript">
+      function renderGitment(){
+        var gitment = new Gitment({
+            id: '1608033165418', 
+            owner: 'MiQingWang',
+            repo: 'MiQingBlogGitalk',
+            
+            oauth: {
+            
+            
+                client_secret: 'e0b69ff2aa101ce7b3fb75701c637ec84aa2253b',
+            
+                client_id: 'ee74868872ae30bb84c5'
+            }});
+        gitment.render('gitment-container');
+      }
+
+      
+      renderGitment();
+      
+      </script>
+    
 
 
 
 
 
-
-  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-
-  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-
-   <script type="text/javascript">
-        var gitalk = new Gitalk({
-          clientID: 'ee74868872ae30bb84c5',
-          clientSecret: 'e0b69ff2aa101ce7b3fb75701c637ec84aa2253b',
-          repo: 'MiQingBlogGitalk',
-          owner: 'MiQingWang',
-          admin: ['MiQingWang'],
-          id: location.pathname,
-          labels: ,
-          perPage: 15,
-          pagerDirection: 'last',
-          createIssueManually: true,
-          distractionFreeMode: false
-        })
-        gitalk.render('gitalk-container')           
-       </script>
 
 
   
