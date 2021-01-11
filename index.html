@@ -165,6 +165,198 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://miqingwang.github.io/2021/01/11/%E3%80%90Android-%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E3%80%91-%E5%AD%A6%E4%BC%9A%E4%BD%BF%E7%94%A8MVVM%E6%9E%B6%E6%9E%84%E7%9A%84%E6%90%AD%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="MiQing">
+      <meta itemprop="description" content="MiQing的个人站,主要涉及android 开发及java开发知识分享及前沿技术探索">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="MiQing Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/01/11/%E3%80%90Android-%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E3%80%91-%E5%AD%A6%E4%BC%9A%E4%BD%BF%E7%94%A8MVVM%E6%9E%B6%E6%9E%84%E7%9A%84%E6%90%AD%E5%BB%BA/" class="post-title-link" itemprop="url">【Android-开发框架搭建】-学会使用MVVM架构的搭建</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-11 18:35:59 / 修改时间：18:47:07" itemprop="dateCreated datePublished" datetime="2021-01-11T18:35:59+08:00">2021-01-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>开发过程中常见的框架模式有MVC、MVP、MVVM，本篇文章讲解MVVM框架模式的原理及在Android开发中如何实现及使用该框架模式。这里一定要明白MVVM不是某些技术实现而是架构模式或者说是设计思路，我们根据MVVM的设计原理进行架构开发，最终形成的是一系列代码组合而成的MVVM模式的框架，MVVM是Android开发最好的架构选择之一，也是Google官方非常支持和鼓励开发者使用这一架构模式，在这个框架上开发出来的程序稳定性更高，可扩展性更强。</p>
+<h2 id="MVVM原理"><a href="#MVVM原理" class="headerlink" title="MVVM原理"></a>MVVM原理</h2><p>MVVM模式不是四层，任然是3层，是Model-View-ViewModel的简写，VM是ViewModel的缩写，VM可以理解为View的数据模型和Presenter的合体，ViewModel和View之间的交互通过data binding完成。下面我们挨个来来说Model、View、ViewModel。</p>
+<h3 id="Model"><a href="#Model" class="headerlink" title="Model"></a>Model</h3><p>Model层就是职责数据的存储、读取网络数据、操作数据库数据以及I/O，它就是用来提供数据，不关心数据去做什么。</p>
+<h3 id="View"><a href="#View" class="headerlink" title="View"></a>View</h3><p>View层做的仅仅和UI相关的工作，在Android中我们只在XML、Activity、Fragment写View层的代码，View层不做和业务相关的事，也就是我们的Activity 不写和业务逻辑相关代码，一般Activity不写更新UI的代码，如果非得要写，那更新的UI必须和业务逻辑和数据是没有关系的，只是单纯UI逻辑来更新UI，比如：滑动时头部颜色渐变、editttext根据输入内容显示隐藏等，简单的说：View层不做任何业务逻辑、不涉及操作数据、不处理数据、UI和数据严格的分开。</p>
+<h3 id="ViewModel"><a href="#ViewModel" class="headerlink" title="ViewModel"></a>ViewModel</h3><p>ViewModel 只做和业务逻辑和业务数据相关的事，不做任何和UI、控件相关的事，ViewModel 层不会持有任何控件的引用，更不会在ViewModel中通过UI控件的引用去做更新UI的事情。ViewModel就是专注于业务的逻辑处理，操作的也都是对数据进行操作，这些个数据源绑定在相应的控件上会自动去更改UI，开发者不需要关心更新UI的事情。</p>
+<p>此处贴出MVVM的模型图<br><img src="/2021/01/11/%E3%80%90Android-%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E3%80%91-%E5%AD%A6%E4%BC%9A%E4%BD%BF%E7%94%A8MVVM%E6%9E%B6%E6%9E%84%E7%9A%84%E6%90%AD%E5%BB%BA/1.png" alt="示例1"></p>
+<p>ViewModel是如何让View和Model实现数据绑定，达到自动更新以及数据更新双向的绑定关系呢？<br>Google在2018年推出了Android Jetpack组件，Jetpack是一个Android软件组件的集合，其中AAC(Android Architecture Components)框架是android官方提供的一系列组件，用来非常方便的实现MVVM架构。<br>本文主要讲解AAC中Lifecycle、LiveData、ViewModel以及DataBinding的结合使用搭建能够基础开发的MVVM架构项目。</p>
+<p>添加依赖</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Google AAC</span></span><br><span class="line">implementation <span class="string">'android.arch.lifecycle:extensions:1.1.1'</span></span><br></pre></td></tr></table></figure>
+
+
+<h2 id="MVVM使用"><a href="#MVVM使用" class="headerlink" title="MVVM使用"></a>MVVM使用</h2><h3 id="DataBinding"><a href="#DataBinding" class="headerlink" title="DataBinding"></a>DataBinding</h3><p>Data Binding（数据绑定）发布于2015年的Google I/O大会，旨在减少Android开发中的大量模板代码(比如findViewById())，增加代码及逻辑清晰度，提高开发效率和维护效率。</p>
+<p>什么是Data Binding？<br>Data Binding，即数据绑定，是Android团队实现MVVM架构的一种方法，使得数据（对象）可以直接绑定到布局的xml中，数据的变化直接反映到View上。<br>同时，Data Binding也支持双向绑定。</p>
+<p>有什么好处？<br>省去大量模板代码，比如findViewById()，setOnClickListener()， setText()，等等。<br>使得View与逻辑彻底解耦（MVVM）成为可能，不像MVC那样逻辑与View操作混在一起难以维护，也不像MVP那样定义大量接口，费时费力。<br>由于数据（对象）与View进行双向绑定，所以开发时只需要关注数据（对象）即可，无需关心View的各种繁杂操作（如setVisibility()，setText()等）<br>功能强大，xml中即可完成简单的逻辑（xml中支持表达式语言，逻辑/数学运算等）</p>
+<p>如何使用?</p>
+<p>1.在模块build.gradle中配置如下配置：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    …</span><br><span class="line">    dataBinding &#123;</span><br><span class="line">        enabled = <span class="keyword">true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Gradle 插件 <span class="number">4.0</span><span class="number">.0</span>及以上:</span><br><span class="line">android &#123;</span><br><span class="line">    buildFeatures&#123;</span><br><span class="line">        dataBinding = <span class="keyword">true</span></span><br><span class="line">        <span class="comment">// for view binding :</span></span><br><span class="line">        <span class="comment">// viewBinding = true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.修改页面布局结构</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">正常页面布局:</span><br><span class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;</span><br><span class="line">&lt;androidx.constraintlayout.widget.ConstraintLayout xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    xmlns:app=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    xmlns:tools=<span class="string">"http://schemas.android.com/tools"</span></span><br><span class="line">    android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">    android:layout_height=<span class="string">"match_parent"</span>&gt;</span><br><span class="line">    &lt;TextView</span><br><span class="line">     android:id=<span class="string">"@+id/userName"</span></span><br><span class="line">     app:layout_constraintTop_toBottomOf=<span class="string">"parent"</span></span><br><span class="line">     app:layout_constraintLeft_toLeftOf=<span class="string">"parent"</span></span><br><span class="line">     app:layout_constraintRight_toRightOf=<span class="string">"parent"</span></span><br><span class="line">     android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">     android:layout_height=<span class="string">"wrap_content"</span>/&gt;</span><br><span class="line">&lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;</span><br><span class="line"></span><br><span class="line">支持DataBinding页面布局:</span><br><span class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;</span><br><span class="line">&lt;layout xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    xmlns:binding=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    xmlns:app=<span class="string">"http://schemas.android.com/apk/res-auto"</span>&gt;</span><br><span class="line">   &lt;data&gt;</span><br><span class="line"></span><br><span class="line">   &lt;/data&gt;</span><br><span class="line">    &lt;androidx.constraintlayout.widget.ConstraintLayout</span><br><span class="line">        xmlns:tools=<span class="string">"http://schemas.android.com/tools"</span></span><br><span class="line">        android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">        android:layout_height=<span class="string">"match_parent"</span>&gt;</span><br><span class="line">        &lt;TextView</span><br><span class="line">            android:id=<span class="string">"@+id/userName"</span></span><br><span class="line">            app:layout_constraintTop_toBottomOf=<span class="string">"parent"</span></span><br><span class="line">            app:layout_constraintLeft_toLeftOf=<span class="string">"parent"</span></span><br><span class="line">            app:layout_constraintRight_toRightOf=<span class="string">"parent"</span></span><br><span class="line">            android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">            android:layout_height=<span class="string">"wrap_content"</span>/&gt;</span><br><span class="line">    &lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;</span><br><span class="line">&lt;/layout&gt;</span><br></pre></td></tr></table></figure>
+<p>3.使用DataBinding绑定页面及数据<br>每个数据绑定布局文件都会生成一个绑定类ViewDataBinding的实例名是根据布局文件名来生成，将之改为首字母大写的驼峰命名法来命名，并省略布局文件名包含的下划线。控件的获取方式类似，但首字母小写<br>也可以通过如下方式自定义ViewDataBinding的实例名</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;data <span class="class"><span class="keyword">class</span></span>=<span class="string">"CustomBinding"</span>&gt;</span><br><span class="line"></span><br><span class="line"> &lt;/data&gt;</span><br></pre></td></tr></table></figure>
+<p>绑定页面方式:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">在Activity中使用</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    ActivityMainBinding mBinding = DataBindingUtil.setContentView(<span class="keyword">this</span>, R.layout.activity_main);</span><br><span class="line">    mBinding.userName.setText(<span class="string">"懂了不"</span>);</span><br><span class="line">&#125;</span><br><span class="line">在Fragment中使用</span><br><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> View <span class="title">onCreateView</span><span class="params">(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    FragmentMainBinding binding = DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, <span class="keyword">false</span>);</span><br><span class="line">    mBinding.userName.setText(<span class="string">"懂了不"</span>);</span><br><span class="line">    <span class="keyword">return</span> binding.getRoot();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>绑定数据方式:<br><data>在这个标签中，我们通常用来做下面的事情：<br>定义所绑定的数据的名称（变量名）及对应类型<br>引入页面所需的类<br>示例如下：<br>其中”<import>”标签表示引入一个类，比如下方例中引入了User类，当然也可以引入其它类，比如常量类或者工具类。<br>下面”<variable>”标签定义了本页面所需要的各种数据名称或类型，其类型可以是java中的基础类型，或者自定义的类。</variable></import></data></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String userName;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getUserName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> userName;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUserName</span><span class="params">(String userName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.userName = userName;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;</span><br><span class="line">&lt;layout xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    xmlns:binding=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    xmlns:app=<span class="string">"http://schemas.android.com/apk/res-auto"</span>&gt;</span><br><span class="line">   &lt;data&gt;</span><br><span class="line">       &lt;<span class="keyword">import</span> type=<span class="string">"com.mi.qing.common.net.mvvm.User"</span>/&gt;</span><br><span class="line">       &lt;!--非<span class="keyword">import</span>方式使用--&gt;</span><br><span class="line">&lt;!--          &lt;variable--&gt;</span><br><span class="line">&lt;!--              name=<span class="string">"user"</span>--&gt;</span><br><span class="line">&lt;!--              type=<span class="string">"com.mi.qing.common.net.mvvm.User"</span> /&gt;--&gt;</span><br><span class="line"></span><br><span class="line">       &lt;!--<span class="keyword">import</span>方式使用--&gt;</span><br><span class="line">       &lt;variable</span><br><span class="line">           name=<span class="string">"user"</span></span><br><span class="line">           type=<span class="string">"User"</span> /&gt;</span><br><span class="line">   &lt;/data&gt;</span><br><span class="line">    &lt;androidx.constraintlayout.widget.ConstraintLayout</span><br><span class="line">        xmlns:tools=<span class="string">"http://schemas.android.com/tools"</span></span><br><span class="line">        android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">        android:layout_height=<span class="string">"match_parent"</span>&gt;</span><br><span class="line">        &lt;TextView</span><br><span class="line">            android:id=<span class="string">"@+id/userName"</span></span><br><span class="line">            app:layout_constraintTop_toBottomOf=<span class="string">"parent"</span></span><br><span class="line">            app:layout_constraintLeft_toLeftOf=<span class="string">"parent"</span></span><br><span class="line">            app:layout_constraintRight_toRightOf=<span class="string">"parent"</span></span><br><span class="line">            android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">            android:layout_height=<span class="string">"wrap_content"</span>/&gt;</span><br><span class="line">    &lt;/androidx.constraintlayout.widget.ConstraintLayout&gt;</span><br><span class="line">&lt;/layout&gt;</span><br></pre></td></tr></table></figure>
+<p>绑定User数据到布局页面中，并且在TextView中显示使用，@{}格式绑定数据</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    ActivityMainBinding mBinding = DataBindingUtil.setContentView(<span class="keyword">this</span>, R.layout.activity_main);</span><br><span class="line">    mBinding.userName.setText(<span class="string">"懂了不"</span>);</span><br><span class="line">    User user = <span class="keyword">new</span> User();</span><br><span class="line">    user.setUserName(<span class="string">"明白了不"</span>);</span><br><span class="line">    mBinding.setUser(user);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">页面布局TextView中使用User中的userName数据</span><br><span class="line">   &lt;TextView</span><br><span class="line">       android:id=<span class="string">"@+id/userName"</span></span><br><span class="line">       app:layout_constraintTop_toBottomOf=<span class="string">"parent"</span></span><br><span class="line">       app:layout_constraintLeft_toLeftOf=<span class="string">"parent"</span></span><br><span class="line">       app:layout_constraintRight_toRightOf=<span class="string">"parent"</span></span><br><span class="line">       android:text=<span class="string">"@&#123;user.userName&#125;"</span></span><br><span class="line">       android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">       android:layout_height=<span class="string">"wrap_content"</span>/&gt;</span><br></pre></td></tr></table></figure>
+<p>Data Binding 还支持以下操作符：</p>
+<ul>
+<li>运算符 + - / * %</li>
+<li>字符串连接 +</li>
+<li>逻辑与或 &amp;&amp; ||</li>
+<li>二进制 &amp; | ^</li>
+<li>一元 + - ! ~</li>
+<li>移位 &gt;&gt; &gt;&gt;&gt; &lt;&lt;</li>
+<li>比较 == &gt; &lt; &gt;= &lt;= (Note that &lt; needs to be escaped as &lt;)</li>
+<li>instanceof</li>
+<li>Grouping ()</li>
+<li>Literals - character, String, numeric, null</li>
+<li>Cast</li>
+<li>方法调用</li>
+<li>域访问</li>
+<li>数组访问</li>
+<li>三元操作符</li>
+</ul>
+<p>4.使用ObservableField刷新UI<br>？它其实是一个可观察的<br>域，通过泛型来使用，可以使用的方法也就三个：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ObservableField(T value)</td>
+<td>构造函数，设置可观察的域</td>
+</tr>
+<tr>
+<td>T get()</td>
+<td>获取可观察的域的内容，可以使用UI控件监测它的值</td>
+</tr>
+<tr>
+<td>set(T value)</td>
+<td>设置可观察的域，设置成功之后，会通知UI控件进行更新</td>
+</tr>
+</tbody></table>
+<p>不过，除了使用ObservableField 之外， Data Binding 为我们提供了基本类型的ObservableXXX (如<br>ObservableInt )和存放容器的ObservableXXX (如ObservableList<T> )等，同样，如果你想让你自定义的类变成<br>可观察状态，需要实现Observable 接口。</T></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserModel</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> ObservableField&lt;User&gt; userObservableField = <span class="keyword">new</span> ObservableField&lt;&gt;();</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    ActivityMainBinding mBinding = DataBindingUtil.setContentView(<span class="keyword">this</span>, R.layout.activity_main);</span><br><span class="line">    mBinding.userName.setText(<span class="string">"懂了不"</span>);</span><br><span class="line">    UserModel userModel = <span class="keyword">new</span> UserModel();</span><br><span class="line">    mBinding.setUserModel(userModel);</span><br><span class="line">    User user = <span class="keyword">new</span> User();</span><br><span class="line">    user.setUserName(<span class="string">"明白了不"</span>);</span><br><span class="line">    userModel.userObservableField.setUser(user);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">页面布局data标签中绑定数据</span><br><span class="line">&lt;data&gt;</span><br><span class="line">    &lt;variable</span><br><span class="line">           name=<span class="string">"userModel"</span></span><br><span class="line">           type=<span class="string">"包名.UserModel"</span> /&gt;</span><br><span class="line">&lt;/data&gt;</span><br><span class="line"></span><br><span class="line">页面布局TextView中使用User中的userName数据</span><br><span class="line">   &lt;TextView</span><br><span class="line">       android:id=<span class="string">"@+id/userName"</span></span><br><span class="line">       app:layout_constraintTop_toBottomOf=<span class="string">"parent"</span></span><br><span class="line">       app:layout_constraintLeft_toLeftOf=<span class="string">"parent"</span></span><br><span class="line">       app:layout_constraintRight_toRightOf=<span class="string">"parent"</span></span><br><span class="line">       android:text=<span class="string">"@&#123;userModel.userObservableField.userName&#125;"</span></span><br><span class="line">       android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">       android:layout_height=<span class="string">"wrap_content"</span>/&gt;</span><br></pre></td></tr></table></figure>
+<p>5.双向数据绑定<br>双向绑定的意思即为当数据改变时同时使视图刷新，而视图改变时也可以同时改变数据，比如当EditText输入的内容在TextView上实时显示，同时TextView绑定的数据也会更新<br>仅仅在将@{userModel.userObservableField.userName} 替换为@={userModel.userObservableField.userName} ，多了一个= 号而已，需要注意的是，属性必须是可观察<br>的，可以使用上面提到的ObservableField ，也可以自定义实现BaseObservable 接口，双向绑定的时候需要注意<br>无限循环，更多关于双向绑定还请查看官方文档。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">页面布局TextView中使用User中的userName数据</span><br><span class="line">   &lt;TextView</span><br><span class="line">       android:id=<span class="string">"@+id/userName"</span></span><br><span class="line">       app:layout_constraintBottom_toBottomOf=<span class="string">"parent"</span></span><br><span class="line">       app:layout_constraintLeft_toLeftOf=<span class="string">"parent"</span></span><br><span class="line">       app:layout_constraintRight_toLeftOf=<span class="string">"@id/userName_edit"</span></span><br><span class="line">       android:text=<span class="string">"@&#123;userModel.userObservableField.userName&#125;"</span></span><br><span class="line">       android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">       android:layout_height=<span class="string">"wrap_content"</span>/&gt;</span><br><span class="line"></span><br><span class="line">   &lt;EditText</span><br><span class="line">       android:id=<span class="string">"@+id/userName_edit"</span></span><br><span class="line">       app:layout_constraintLeft_toRightOf=<span class="string">"@id/userName"</span></span><br><span class="line">       app:layout_constraintBottom_toBottomOf=<span class="string">"parent"</span></span><br><span class="line">       app:layout_constraintRight_toRightOf=<span class="string">"parent"</span></span><br><span class="line">       android:text=<span class="string">"@=&#123;userModel.userObservableField.userName&#125;"</span></span><br><span class="line">       android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">       android:layout_height=<span class="string">"wrap_content"</span>/&gt;</span><br></pre></td></tr></table></figure>
+<p>6.自定义属性BindingAdapter<br>dataBinding 提供了 BindingAdapter 这个注解用于支持自定义属性，或者是修改原有属性。注解值可以是已有的 xml 属性，例如 android:src、android:text等，也可以自定义属性然后在 xml 中使用<br>例如，对于一个 ImageView ，我们希望在某个变量值发生变化时，可以动态改变显示的图片，此时就可以通过 BindingAdapter 来实现<br>需要先定义一个静态方法，为之添加 BindingAdapter 注解，注解值是为 ImageView 控件自定义的属性名，而该静态方法的两个参数可以这样来理解：<br>当 ImageView 控件的 url 属性值发生变化时，dataBinding 就会将 ImageView 实例以及新的 url 值传递给 loadImage() 方法，从而可以在此动态改变 ImageView 的相关属性</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ImageUtils</span> </span>&#123;</span><br><span class="line"><span class="meta">@BindingAdapter</span>(&#123;<span class="string">"url"</span>&#125;)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">loadImage</span><span class="params">(ImageView view, String url)</span> </span>&#123;</span><br><span class="line">    Log.e(TAG, <span class="string">"loadImage url : "</span> + url);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在 xml 文件中关联变量值，当中，bind 这个名称可以自定义</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;</span><br><span class="line">&lt;layout xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    xmlns:bind=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    xmlns:tools=<span class="string">"http://schemas.android.com/tools"</span>&gt;</span><br><span class="line"></span><br><span class="line">    &lt;data&gt;</span><br><span class="line">        &lt;variable</span><br><span class="line">            name=<span class="string">"imageUtils"</span></span><br><span class="line">            type=<span class="string">"包名.ImageUtils"</span> /&gt;</span><br><span class="line">    &lt;/data&gt;</span><br><span class="line"></span><br><span class="line">    &lt;android.support.constraint.ConstraintLayout</span><br><span class="line">        android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">        android:layout_height=<span class="string">"match_parent"</span></span><br><span class="line">        &gt;</span><br><span class="line"></span><br><span class="line">        &lt;ImageView</span><br><span class="line">            android:id=<span class="string">"@+id/image"</span></span><br><span class="line">            android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">            android:layout_height=<span class="string">"wrap_content"</span></span><br><span class="line">            bind:url=<span class="string">"@&#123;imageUtils.url&#125;"</span> /&gt;</span><br><span class="line">        </span><br><span class="line">    &lt;/android.support.constraint.ConstraintLayout&gt;</span><br><span class="line">&lt;/layout&gt;</span><br></pre></td></tr></table></figure>
+<p>DataBinding的其它使用方式参考 <a href="https://developer.android.google.cn/topic/libraries/data-binding" target="_blank" rel="noopener">文章地址</a></p>
+<h3 id="ViewModel-amp-LiveData"><a href="#ViewModel-amp-LiveData" class="headerlink" title="ViewModel &amp; LiveData"></a>ViewModel &amp; LiveData</h3><p>1.LiveData<br>LiveData 作用跟RxJava类似，是观察数据的类，相比RxJava，它能够在Activity、Fragment和Service之中正确的处理生命周期。这意味着它尊重其他应用程序组件的生命周期，这种感知确保LiveData只更新处于生命周期状态内的应用程序组件。<br>LiveData是由observer类表示的观察者视为处于活动状态，如果其生命周期处于START或RESUMED状态。LiveData会将观察者视为活动状态，并通知其数据的变化。LiveData未注册的观察对象以及非活动观察者是不会收到有关更新的通知。<br>那么LiveData 有什么优点呢？</p>
+<ul>
+<li>数据变更的时候更新UI</li>
+<li>没有内存泄漏</li>
+<li>不会因为停止Activity崩溃</li>
+<li>无需手动处理生命周期</li>
+<li>共享资源</li>
+</ul>
+<p>使用方式：</p>
+<table>
+<thead>
+<tr>
+<th>方法名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>observe(@NonNull LifecycleOwner owner, @NonNull Observer&lt;? super T&gt; observer)</td>
+<td>最常用的方法，需要提供Observer 处理数据变更后的处理。LifecycleOwner 则是我们能够正确处理声明周期的关键！</td>
+</tr>
+<tr>
+<td>getValue():T</td>
+<td>获取数据</td>
+</tr>
+<tr>
+<td>postValue(T value)</td>
+<td>在主线程中更新数据</td>
+</tr>
+</tbody></table>
+<p>2.ViewModel<br>ViewModel 具有生命周期意识的处理跟UI相关的数据，并且，当设备的一些配置信息改变（例如屏幕旋转）它的数据不会消失。<br>通常情况下，如果我们不做特殊处理，当屏幕旋转的时候，数据会消失，那ViewModel 管理的数据为什么不会消失呢，是因为ViewModel 的生命周期：<br><img src="/2021/01/11/%E3%80%90Android-%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E3%80%91-%E5%AD%A6%E4%BC%9A%E4%BD%BF%E7%94%A8MVVM%E6%9E%B6%E6%9E%84%E7%9A%84%E6%90%AD%E5%BB%BA/2.png" alt="示例2"><br>ViewModel 的另一个特点就是同一个Activity 的Fragment 之间可以使用ViewModel实现共享数据。</p>
+<p>3.定义ViewModel和创建LiveData</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserModel</span> <span class="keyword">extends</span> <span class="title">AndroidViewModel</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建LiveData</span></span><br><span class="line">    <span class="keyword">public</span> MutableLiveData&lt;User&gt; mUser = <span class="keyword">new</span> MutableLiveData&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AccountModel</span><span class="params">(@NonNull Application application)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(application);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getUser</span><span class="params">()</span></span>&#123;</span><br><span class="line">        User user = <span class="keyword">new</span> User();</span><br><span class="line">        user.setUserName(<span class="string">"明白了不"</span>);</span><br><span class="line">        mUser.postValue(user);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 当MyActivity被销毁时，Framework会调用ViewModel的onCleared()</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCleared</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Log.e(<span class="string">"AccountModel"</span>, <span class="string">"==========onCleared()=========="</span>);</span><br><span class="line">        <span class="keyword">super</span>.onCleared();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    ActivityMainBinding mBinding = DataBindingUtil.setContentView(<span class="keyword">this</span>, R.layout.activity_main);</span><br><span class="line">    UserModel userModel = ViewModelProviders.of(<span class="keyword">this</span>).get(UserModel<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">    mBinding.setUserModel(userModel);</span><br><span class="line">    userModel.getUser();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;</span><br><span class="line">&lt;layout xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    xmlns:bind=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span><br><span class="line">    xmlns:tools=<span class="string">"http://schemas.android.com/tools"</span>&gt;</span><br><span class="line"></span><br><span class="line">    &lt;data&gt;</span><br><span class="line">        &lt;variable</span><br><span class="line">            name=<span class="string">"userModel"</span></span><br><span class="line">            type=<span class="string">"包名.UserModel"</span> /&gt;</span><br><span class="line">    &lt;/data&gt;</span><br><span class="line"></span><br><span class="line">    &lt;android.support.constraint.ConstraintLayout</span><br><span class="line">        android:layout_width=<span class="string">"match_parent"</span></span><br><span class="line">        android:layout_height=<span class="string">"match_parent"</span></span><br><span class="line">        &gt;</span><br><span class="line"></span><br><span class="line">   &lt;TextView</span><br><span class="line">       android:id=<span class="string">"@+id/userName"</span></span><br><span class="line">       app:layout_constraintBottom_toBottomOf=<span class="string">"parent"</span></span><br><span class="line">       app:layout_constraintLeft_toLeftOf=<span class="string">"parent"</span></span><br><span class="line">       app:layout_constraintRight_toLeftOf=<span class="string">"@id/userName_edit"</span></span><br><span class="line">       android:text=<span class="string">"@&#123;userModel.mUser.userName&#125;"</span></span><br><span class="line">       android:layout_width=<span class="string">"wrap_content"</span></span><br><span class="line">       android:layout_height=<span class="string">"wrap_content"</span>/&gt;</span><br><span class="line">    &lt;/android.support.constraint.ConstraintLayout&gt;</span><br><span class="line">&lt;/layout&gt;</span><br></pre></td></tr></table></figure>
+<p>LiveData的其它使用方式参考 <a href="https://developer.android.google.cn/topic/libraries/architecture/livedata" target="_blank" rel="noopener">文章地址</a><br>ViewModel的其它使用方式参考 <a href="https://developer.android.google.cn/topic/libraries/architecture/viewmodel" target="_blank" rel="noopener">文章地址</a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>此处只是简单介绍Android原生支持的MVVM架构模式的组件结合方式,目前github还有比较成熟的框架可以去借鉴一下。<br>MVVMHabit <a href="https://github.com/goldze/MVVMHabit" target="_blank" rel="noopener">GITHUB传送门</a><br>此处再贴出作者参考搭建的MVVM框架源码<br>源码地址 <a href="https://github.com/MiQingWang/CommonNetFrame" target="_blank" rel="noopener">MiQingWang/CommonNetFrame</a></p>
+
+      
+    </div>
+
+    
+    
+    
+<div></div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://miqingwang.github.io/2020/12/15/%E3%80%90Android-%E5%BC%80%E5%8F%91%E6%A1%86%E6%9E%B6%E6%90%AD%E5%BB%BA%E3%80%91-%E5%AD%A6%E4%BC%9A%E4%BD%BF%E7%94%A8MVP%E6%9E%B6%E6%9E%84%E7%9A%84%E6%90%AD%E5%BB%BA%E9%A1%B9%E7%9B%AE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -196,8 +388,17 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-12-22 21:20:03" itemprop="dateModified" datetime="2020-12-22T21:20:03+08:00">2020-12-22</time>
+                <time title="修改时间：2020-12-22 21:36:18" itemprop="dateModified" datetime="2020-12-22T21:36:18+08:00">2020-12-22</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -285,8 +486,17 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-12-17 15:42:19" itemprop="dateModified" datetime="2020-12-17T15:42:19+08:00">2020-12-17</time>
+                <time title="修改时间：2020-12-22 21:35:53" itemprop="dateModified" datetime="2020-12-22T21:35:53+08:00">2020-12-22</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -374,8 +584,17 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-30 21:25:20" itemprop="dateModified" datetime="2020-11-30T21:25:20+08:00">2020-11-30</time>
+                <time title="修改时间：2020-12-22 21:35:50" itemprop="dateModified" datetime="2020-12-22T21:35:50+08:00">2020-12-22</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -464,8 +683,17 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-11-30 21:25:23" itemprop="dateModified" datetime="2020-11-30T21:25:23+08:00">2020-11-30</time>
+                <time title="修改时间：2020-12-22 21:35:48" itemprop="dateModified" datetime="2020-12-22T21:35:48+08:00">2020-12-22</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -547,9 +775,24 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-10-29 11:55:13 / 修改时间：16:20:20" itemprop="dateCreated datePublished" datetime="2020-10-29T11:55:13+08:00">2020-10-29</time>
+              <time title="创建时间：2020-10-29 11:55:13" itemprop="dateCreated datePublished" datetime="2020-10-29T11:55:13+08:00">2020-10-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-12-22 21:35:41" itemprop="dateModified" datetime="2020-12-22T21:35:41+08:00">2020-12-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
             </span>
 
           <br>
@@ -638,8 +881,17 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-29 15:45:31" itemprop="dateModified" datetime="2020-10-29T15:45:31+08:00">2020-10-29</time>
+                <time title="修改时间：2020-12-22 21:35:43" itemprop="dateModified" datetime="2020-12-22T21:35:43+08:00">2020-12-22</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -726,8 +978,17 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-10-29 15:45:30" itemprop="dateModified" datetime="2020-10-29T15:45:30+08:00">2020-10-29</time>
+                <time title="修改时间：2020-12-22 21:35:47" itemprop="dateModified" datetime="2020-12-22T21:35:47+08:00">2020-12-22</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+                </span>
+            </span>
 
           <br>
             <span class="post-meta-item" title="本文字数">
@@ -930,9 +1191,21 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">日志</span>
         </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
 </div>
@@ -968,7 +1241,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2020</span>
+  <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
